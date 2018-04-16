@@ -43,19 +43,38 @@ MongoClient.connect(url, function(err, connection) {
 
 });
 */
-app.get('/', function (req, res) {
+app.get('/movie/query/sort/date', function (req, res) {
     // Connect to the server and open database 'MoviesDB'
     // Call methods to insert find, update and delete documents
     MongoClient.connect(url, function (err, connection) {
         assert.equal(null, err);
         console.log("Connected successfully to server");
         var database = connection.db('MoviesDB');
-        var collection = database.collection('documents');
+        var collection = database.collection('searchHistory');
         // Find some documents
-        collection.find({}).toArray(function (err, docs) {
+        collection.find({}, { 'sort': [['ts', 'ascending']] }).toArray(function (err, docs) {
             assert.equal(err, null);
-            console.log("Found the following records");
-            console.log(docs);
+            //console.log("Found the following records");
+            //console.log(docs);
+            var response = docs;
+            res.send(response);
+            connection.close();
+        });
+    });
+});
+app.get('/movie/query/sort/totalresults', function (req, res) {
+    // Connect to the server and open database 'MoviesDB'
+    // Call methods to insert find, update and delete documents
+    MongoClient.connect(url, function (err, connection) {
+        assert.equal(null, err);
+        console.log("Connected successfully to server");
+        var database = connection.db('MoviesDB');
+        var collection = database.collection('searchHistory');
+        // Find some documents
+        collection.find({}, { 'sort': [['totalResults', 'descending']] }).toArray(function (err, docs) {
+            assert.equal(err, null);
+            //console.log("Found the following records");
+            //console.log(docs);
             var response = docs;
             res.send(response);
             connection.close();
@@ -66,10 +85,10 @@ app.post('/moviesearchquery', function (req, res) {
     // Connect to the server and open database 'MoviesDB'
     MongoClient.connect(url, function (err, connection) {
         assert.equal(null, err);
-        console.log("Connected successfully to server");
+        console.log("Connected successfully to server!");
         var database = connection.db('MoviesDB');
         var collection = database.collection('searchHistory');
-        var message = { searchString: req.param('searchString'), ts: Date.now() };
+        var message = { searchString: req.param('searchQuery'), totalResults: req.param('totalResults'), ts: Date.now() };
         // Insert the student data into the database
         collection.insert([message], function (err, result) {
             if (err) {
@@ -78,26 +97,30 @@ app.post('/moviesearchquery', function (req, res) {
             else {
                 console.log(result);
             }
-            // Close the database
-            connection.close();
         });
+        // Close the database
+        connection.close();
     });
     res.send("OK");
 });
+/*
 app.get('/sample', function (req, res) {
-    var response = { message: 'you called /sample with GET operation' };
+    var response = {message: 'you called /sample with GET operation'};
     res.send(response);
 });
+
 app.post('/sample', function (req, res) {
     var message = req.param('message');
-    var response = { message: message };
+    var response = {message: message};
     res.send(response);
 });
-app.post('/', function (req, res) {
+
+app.post('/', function(req, res) { //request , result
     console.log('Request body: ', req.body);
-    var result = { message: 'you called /sample with POST operation', originData: req.body };
+    var result = {message: 'you called /sample with POST operation', originData: req.body};
     res.send(result);
 });
+*/
 app.listen(3000, function () {
     console.log('Example app listening on port 3000!');
 });
