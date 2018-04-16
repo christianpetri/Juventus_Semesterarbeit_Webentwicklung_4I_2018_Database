@@ -69,7 +69,7 @@ app.get('/movie/query/sort/date', function (req, res) { //request result
     });
 });
 
-app.get('/movie/query/sort/totalresults', function (req, res) { //request result
+app.get('/movie/query/sort/totalresults/desc', function (req, res) { //request result
     // Connect to the server and open database 'MoviesDB'
 // Call methods to insert find, update and delete documents
     MongoClient.connect(url, function(err, connection) {
@@ -79,6 +79,65 @@ app.get('/movie/query/sort/totalresults', function (req, res) { //request result
         var collection = database.collection('searchHistory');
         // Find some documents
         collection.find({} , {'sort' : [['totalResults', 'descending']]}).toArray(function(err, docs) { // 'ascending', 'descending'
+            assert.equal(err, null);
+            //console.log("Found the following records");
+            //console.log(docs);
+            var response = docs;
+            res.send(response);
+            connection.close();
+        });
+    });
+});
+app.get('/movie/query/sort/totalresults/asc', function (req, res) { //request result
+    // Connect to the server and open database 'MoviesDB'
+// Call methods to insert find, update and delete documents
+    MongoClient.connect(url, function(err, connection) {
+        assert.equal(null, err);
+        console.log("Connected successfully to server");
+        var database = connection.db('MoviesDB');
+        var collection = database.collection('searchHistory');
+        // Find some documents
+        collection.find({} , {'sort' : [['totalResults', 'ascending']]}).toArray(function(err, docs) { // 'ascending', 'descending'
+            assert.equal(err, null);
+            //console.log("Found the following records");
+            //console.log(docs);
+            var response = docs;
+            res.send(response);
+            connection.close();
+        });
+    });
+});
+
+app.get('/movie/query/sort/totalresults/date/asc', function (req, res) { //request result
+    // Connect to the server and open database 'MoviesDB'
+// Call methods to insert find, update and delete documents
+    MongoClient.connect(url, function(err, connection) {
+        assert.equal(null, err);
+        console.log("Connected successfully to server");
+        var database = connection.db('MoviesDB');
+        var collection = database.collection('searchHistory');
+        // Find some documents
+        collection.find({} , {'sort' : [['ts', 'ascending']]}).toArray(function(err, docs) { // 'ascending', 'descending'
+            assert.equal(err, null);
+            //console.log("Found the following records");
+            //console.log(docs);
+            var response = docs;
+            res.send(response);
+            connection.close();
+        });
+    });
+});
+
+app.get('/movie/query/sort/totalresults/date/desc', function (req, res) { //request result
+    // Connect to the server and open database 'MoviesDB'
+// Call methods to insert find, update and delete documents
+    MongoClient.connect(url, function(err, connection) {
+        assert.equal(null, err);
+        console.log("Connected successfully to server");
+        var database = connection.db('MoviesDB');
+        var collection = database.collection('searchHistory');
+        // Find some documents
+        collection.find({} , {'sort' : [['ts', 'descending']]}).toArray(function(err, docs) { // 'ascending', 'descending'
             assert.equal(err, null);
             //console.log("Found the following records");
             //console.log(docs);
