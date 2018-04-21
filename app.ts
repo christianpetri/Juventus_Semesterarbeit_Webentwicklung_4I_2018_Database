@@ -48,10 +48,10 @@ MongoClient.connect(url, function(err, connection) {
 
 });
 */
-
+/*
 app.get('/movie/query/sort/date', function (req, res) { //request result
     // Connect to the server and open database 'MoviesDB'
-// Call methods to insert find, update and delete documents
+    // Call methods to insert find, update and delete documents
     MongoClient.connect(url, function(err, connection) {
         assert.equal(null, err);
         console.log("Connected successfully to server");
@@ -68,6 +68,7 @@ app.get('/movie/query/sort/date', function (req, res) { //request result
         });
     });
 });
+*/
 
 app.get('/movie/query/sort/totalresults/desc', function (req, res) { //request result
     // Connect to the server and open database 'MoviesDB'
@@ -108,7 +109,7 @@ app.get('/movie/query/sort/totalresults/asc', function (req, res) { //request re
     });
 });
 
-app.get('/movie/query/sort/totalresults/date/asc', function (req, res) { //request result
+app.get('/movie/query/sort/date/asc', function (req, res) { //request result
     // Connect to the server and open database 'MoviesDB'
 // Call methods to insert find, update and delete documents
     MongoClient.connect(url, function(err, connection) {
@@ -128,7 +129,7 @@ app.get('/movie/query/sort/totalresults/date/asc', function (req, res) { //reque
     });
 });
 
-app.get('/movie/query/sort/totalresults/date/desc', function (req, res) { //request result
+app.get('/movie/query/sort/date/desc', function (req, res) { //request result
     // Connect to the server and open database 'MoviesDB'
 // Call methods to insert find, update and delete documents
     MongoClient.connect(url, function(err, connection) {
@@ -147,7 +148,6 @@ app.get('/movie/query/sort/totalresults/date/desc', function (req, res) { //requ
         });
     });
 });
-
 
 app.post('/moviesearchquery', function (req, res) { //request result
     // Connect to the server and open database 'MoviesDB'
@@ -171,6 +171,51 @@ app.post('/moviesearchquery', function (req, res) { //request result
         connection.close();
     });
     res.send("OK");
+});
+
+app.get('/favorite', function (req, res) { //request result
+    // Connect to the server and open database 'MoviesDB'
+    MongoClient.connect(url, function(err, connection) {
+        assert.equal(null, err);
+        console.log("Connected successfully to server!");
+        var database = connection.db('MoviesDB');
+        var collection = database.collection('favoriteMovies');
+
+        var message = {searchString: req.param('id'),totalResults: req.param('name')};
+
+        // Insert the student data into the database
+        collection.find({}).toArray(function(err, docs) {
+            assert.equal(err, null);
+            //console.log("Found the following records");
+            //console.log(docs);
+            var response = docs;
+            res.send(response);
+            connection.close();
+        });
+        // Close the database
+        connection.close();
+    });
+
+});
+
+app.get('/movie/query/sort/date/desc', function (req, res) { //request result
+    // Connect to the server and open database 'MoviesDB'
+// Call methods to insert find, update and delete documents
+    MongoClient.connect(url, function(err, connection) {
+        assert.equal(null, err);
+        console.log("Connected successfully to server");
+        var database = connection.db('MoviesDB');
+        var collection = database.collection('searchHistory');
+        // Find some documents
+        collection.find({} , {'sort' : [['ts', 'descending']]}).toArray(function(err, docs) { // 'ascending', 'descending'
+            assert.equal(err, null);
+            //console.log("Found the following records");
+            //console.log(docs);
+            var response = docs;
+            res.send(response);
+            connection.close();
+        });
+    });
 });
 
 /*
