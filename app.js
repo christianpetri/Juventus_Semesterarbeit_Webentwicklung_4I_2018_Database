@@ -207,7 +207,7 @@ app.post('/moviefavorite/remove', function (req, res) {
         connection.close();
     });
 });
-app.get('/favorite', function (req, res) {
+app.get('/moviefavorite', function (req, res) {
     // Connect to the server and open database 'MoviesDB'
     MongoClient.connect(url, function (err, connection) {
         assert.equal(null, err);
