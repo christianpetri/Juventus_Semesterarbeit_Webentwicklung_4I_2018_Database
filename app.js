@@ -162,6 +162,51 @@ app.post('/moviesearchquery', function (req, res) {
     });
     res.send("OK");
 });
+app.post('/moviefavorite/add', function (req, res) {
+    // Connect to the server and open database 'MoviesDB'
+    MongoClient.connect(url, function (err, connection) {
+        assert.equal(null, err);
+        console.log("Connected successfully to server!");
+        var database = connection.db('MoviesDB');
+        var collection = database.collection('favoriteMovies');
+        var message = { id: req.param('movieID') };
+        console.log('message' + req.param('movieID'));
+        // Insert the student data into the database
+        collection.insert(message, { unique: true }, function (err, result) {
+            //db.members.createIndex( { "user_id": 1 }, { unique: true } )
+            if (err) {
+                console.log(err);
+                res.send("Not OK");
+            }
+            else {
+                console.log(result);
+                res.send("OK");
+            }
+        });
+        // Close the database
+        connection.close();
+    });
+});
+app.post('/moviefavorite/remove', function (req, res) {
+    // Connect to the server and open database 'MoviesDB'
+    MongoClient.connect(url, function (err, connection) {
+        assert.equal(null, err);
+        console.log("Connected successfully to server!");
+        var database = connection.db('MoviesDB');
+        var collection = database.collection('favoriteMovies');
+        var message = { id: req.param('movieID') };
+        console.log('id ' + req.param('movieID'));
+        collection.deleteOne(message, function (err, result) {
+            assert.equal(err, null);
+            //assert.equal(1, result.result.n);
+            console.log("Removed");
+            //console.log(result);
+            res.send("Removed");
+        });
+        // Close the database
+        connection.close();
+    });
+});
 app.get('/favorite', function (req, res) {
     // Connect to the server and open database 'MoviesDB'
     MongoClient.connect(url, function (err, connection) {
@@ -169,15 +214,44 @@ app.get('/favorite', function (req, res) {
         console.log("Connected successfully to server!");
         var database = connection.db('MoviesDB');
         var collection = database.collection('favoriteMovies');
-        var message = { searchString: req.param('id'), totalResults: req.param('name') };
-        // Insert the student data into the database
+        // Find the Favorite Movie IDs
         collection.find({}).toArray(function (err, docs) {
             assert.equal(err, null);
             //console.log("Found the following records");
             //console.log(docs);
             var response = docs;
             res.send(response);
-            connection.close();
+        });
+        // Close the database
+        connection.close();
+    });
+});
+app.get('/ismovieafavorite', function (req, res) {
+    // Connect to the server and open database 'MoviesDB'
+    MongoClient.connect(url, function (err, connection) {
+        assert.equal(null, err);
+        console.log("Connected successfully to server!");
+        var database = connection.db('MoviesDB');
+        var collection = database.collection('favoriteMovies');
+        var movieID = req.param('movieID');
+        console.log(req.param('movieID'));
+        // Find the Favorite Movie IDs
+        collection.find({ id: Number(movieID) }).count(function (err, count) {
+            assert.equal(null, err);
+            if (err) {
+                console.log(err);
+                res.send("err");
+            }
+            else {
+                if (count > 0) {
+                    console.log(count);
+                    res.send(JSON.stringify({ answer: true }));
+                }
+                else {
+                    console.log(count);
+                    res.send(JSON.stringify({ answer: false }));
+                }
+            }
         });
         // Close the database
         connection.close();
