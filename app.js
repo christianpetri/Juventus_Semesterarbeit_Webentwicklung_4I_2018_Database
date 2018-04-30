@@ -64,6 +64,23 @@ app.get('/movie/query/sort/date', function (req, res) { //request result
     });
 });
 */
+app.get('/', function (req, res) {
+    // Connect to the server
+    MongoClient.connect(url, function (err, connection) {
+        assert.equal(null, err);
+        if (err) {
+            var message = 'Not connected to the database!';
+            console.log(message);
+            res.send(message);
+        }
+        else {
+            var message = 'Connected successfully to database';
+            console.log(message);
+            res.send(message);
+        }
+        connection.close();
+    });
+});
 app.get('/movie/query/sort/totalresults/desc', function (req, res) {
     // Connect to the server and open database 'MoviesDB'
     // Call methods to insert find, update and delete documents
@@ -139,6 +156,57 @@ app.get('/movie/query/sort/date/desc', function (req, res) {
             connection.close();
         });
     });
+});
+app.get('/movie/query/sort/last/5', function (req, res) {
+    // Connect to the server and open database 'MoviesDB'
+    // Call methods to insert find, update and delete documents
+    MongoClient.connect(url, function (err, connection) {
+        assert.equal(null, err);
+        console.log("Connected successfully to server");
+        var database = connection.db('MoviesDB');
+        var collection = database.collection('searchHistory');
+        // Find some documents
+        collection.find({}, { 'sort': [['ts', 'descending']] }).limit(5).toArray(function (err, docs) {
+            assert.equal(err, null);
+            //console.log("Found the following records");
+            //console.log(docs);
+            var response = docs;
+            res.send(response);
+            connection.close();
+        });
+    });
+});
+app.get('/movie/query/date', function (req, res) {
+    // Connect to the server and open database 'MoviesDB'
+    // Call methods to insert find, update and delete documents
+    var dateFrom = '';
+    if (req.param('timestampDateFrom') > '') {
+        dateFrom = req.param('timestampDateFrom');
+        MongoClient.connect(url, function (err, connection) {
+            assert.equal(null, err);
+            console.log("Connected successfully to server");
+            var database = connection.db('MoviesDB');
+            var collection = database.collection('searchHistory');
+            // Find some documents
+            //
+            console.log(typeof dateFrom);
+            console.log(dateFrom);
+            var number = parseInt(dateFrom);
+            console.log(typeof t);
+            collection.find({ 'ts': { $gte: number } }, { 'sort': [['ts', 'ascending']] }).toArray(function (err, docs) {
+                assert.equal(err, null);
+                //console.log("Found the following records");
+                //console.log(docs);
+                var response = docs;
+                res.send(response);
+                connection.close();
+            });
+        });
+    }
+    else {
+        timestampDateFrom = 'no date';
+        res.send(timestampDateFrom);
+    }
 });
 app.post('/moviesearchquery', function (req, res) {
     // Connect to the server and open database 'MoviesDB'
@@ -279,6 +347,18 @@ app.get('/movie/query/sort/date/desc', function (req, res) {
 /*
 app.get('/sample', function (req, res) {
     var response = {message: 'you called /sample with GET operation'};
+    res.send(response);
+});
+
+app.get('/sample', function (req, res) {
+    var message = '';
+    if(req.param('message') > ''){
+        message = req.param('message');
+    } else{
+        message = 'no query';
+    }
+    //var response = {message: message};
+    var response = message;
     res.send(response);
 });
 
