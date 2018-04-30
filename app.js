@@ -94,8 +94,7 @@ app.get('/movie/query/sort/totalresults/desc', function (req, res) {
             assert.equal(err, null);
             //console.log("Found the following records");
             //console.log(docs);
-            var response = docs;
-            res.send(response);
+            res.send(docs);
             connection.close();
         });
     });
@@ -113,8 +112,7 @@ app.get('/movie/query/sort/totalresults/asc', function (req, res) {
             assert.equal(err, null);
             //console.log("Found the following records");
             //console.log(docs);
-            var response = docs;
-            res.send(response);
+            res.send(docs);
             connection.close();
         });
     });
@@ -132,8 +130,7 @@ app.get('/movie/query/sort/date/asc', function (req, res) {
             assert.equal(err, null);
             //console.log("Found the following records");
             //console.log(docs);
-            var response = docs;
-            res.send(response);
+            res.send(docs);
             connection.close();
         });
     });
@@ -151,8 +148,7 @@ app.get('/movie/query/sort/date/desc', function (req, res) {
             assert.equal(err, null);
             //console.log("Found the following records");
             //console.log(docs);
-            var response = docs;
-            res.send(response);
+            res.send(docs);
             connection.close();
         });
     });
@@ -170,8 +166,7 @@ app.get('/movie/query/sort/last/5', function (req, res) {
             assert.equal(err, null);
             //console.log("Found the following records");
             //console.log(docs);
-            var response = docs;
-            res.send(response);
+            res.send(docs);
             connection.close();
         });
     });
@@ -197,15 +192,14 @@ app.get('/movie/query/date', function (req, res) {
                 assert.equal(err, null);
                 //console.log("Found the following records");
                 //console.log(docs);
-                var response = docs;
-                res.send(response);
+                res.send(docs);
                 connection.close();
             });
         });
     }
     else {
-        timestampDateFrom = 'no date';
-        res.send(timestampDateFrom);
+        dateFrom = 'no date';
+        res.send(dateFrom);
     }
 });
 app.post('/moviesearchquery', function (req, res) {
@@ -266,9 +260,8 @@ app.post('/moviefavorite/remove', function (req, res) {
         console.log('id ' + req.param('movieID'));
         collection.deleteOne(message, function (err, result) {
             assert.equal(err, null);
-            //assert.equal(1, result.result.n);
-            console.log("Removed");
-            //console.log(result);
+            //assert.equal(1, result.result.n); 
+            console.log(result);
             res.send("Removed");
         });
         // Close the database
@@ -287,8 +280,7 @@ app.get('/moviefavorite', function (req, res) {
             assert.equal(err, null);
             //console.log("Found the following records");
             //console.log(docs);
-            var response = docs;
-            res.send(response);
+            res.send(docs);
         });
         // Close the database
         connection.close();
@@ -338,103 +330,111 @@ app.get('/movie/query/sort/date/desc', function (req, res) {
             assert.equal(err, null);
             //console.log("Found the following records");
             //console.log(docs);
-            var response = docs;
-            res.send(response);
+            res.send(docs);
             connection.close();
         });
     });
 });
 /*
 app.get('/sample', function (req, res) {
-    var response = {message: 'you called /sample with GET operation'};
+    let response = {message: 'you called /sample with GET operation'};
     res.send(response);
 });
 
 app.get('/sample', function (req, res) {
-    var message = '';
+    let message = '';
     if(req.param('message') > ''){
         message = req.param('message');
     } else{
         message = 'no query';
     }
-    //var response = {message: message};
-    var response = message;
+    //let response = {message: message};
+    let response = message;
     res.send(response);
 });
 
 app.post('/sample', function (req, res) {
-    var message = req.param('message');
-    var response = {message: message};
+    let message = req.param('message');
+    let response = {message: message};
     res.send(response);
 });
 
 app.post('/', function(req, res) { //request , result
     console.log('Request body: ', req.body);
-    var result = {message: 'you called /sample with POST operation', originData: req.body};
+    let result = {message: 'you called /sample with POST operation', originData: req.body};
     res.send(result);
 });
 */
 app.listen(3000, function () {
     console.log('Example app listening on port 3000!');
 });
-var insertDocuments = function (db, callback) {
+/*
+let insertDocuments = function(db, callback) {
     // Get the documents collection
-    var collection = db.collection('documents');
+    let collection = db.collection('documents');
     // Insert some documents
-    collection.insertMany([{ a: 1 }, { a: 2 }, { a: 3 }], function (err, result) {
-        assert.equal(err, null);
-        assert.equal(3, result.result.n); // result = the document
-        assert.equal(3, result.ops.length); // ops = the inserted docs
-        console.log("Inserted 3 documents into the collection");
-        callback(result); // Call callback function
-    });
+    collection.insertMany([ {a : 1}, {a : 2}, {a : 3} ],
+        function(err, result) {
+            assert.equal(err, null);
+            assert.equal(3, result.result.n); // result = the document
+            assert.equal(3, result.ops.length); // ops = the inserted docs
+            console.log("Inserted 3 documents into the collection");
+            callback(result); // Call callback function
+        });
 };
-var findAll = function (db, callback) {
+
+let findAll = function(db, callback) {
     // Get the documents collection
-    var collection = db.collection('documents');
+    let collection = db.collection('documents');
     // Find some documents
-    collection.find({}).toArray(function (err, docs) {
+    collection.find({}).toArray(function(err, docs) {
         assert.equal(err, null);
         console.log("Found the following records");
         console.log(docs);
-        var response = docs;
+        let response = docs;
+
         callback(docs); // Call callback function
     });
 };
-var updateDocument = function (db, callback) {
+
+let updateDocument = function(db, callback) {
     // Get the documents collection
-    var collection = db.collection('documents');
+    let collection = db.collection('documents');
     // Update first document where a is 2, set b equal to 1
     // $set updates existing attributes or inserts new attributes
-    collection.updateOne({ a: 2 }, { $set: { b: 1 } }, function (err, result) {
-        assert.equal(err, null);
-        assert.equal(1, result.result.n);
-        console.log("Updated document with field a equal 2");
-        callback(result);
-    });
+    collection.updateOne({ a : 2 } , { $set: { b : 1 } },
+        function(err, result) {
+            assert.equal(err, null);
+            assert.equal(1, result.result.n);
+            console.log("Updated document with field a equal 2");
+            callback(result);
+        });
 };
-var removeDocument = function (db, callback) {
+
+let removeDocument = function(db, callback) {
     // Get the documents collection
-    var collection = db.collection('documents');
+    let collection = db.collection('documents');
     // Delete first document where a is 3
-    collection.deleteOne({ a: 3 }, function (err, result) {
+    collection.deleteOne({ a : 3 }, function(err, result) {
         assert.equal(err, null);
         assert.equal(1, result.result.n);
         console.log("Removed document with field a equal 3");
         callback(result);
     });
 };
-var removeFavoriteMovie = function (db, callback) {
+
+let removeFavoriteMovie = function(db, callback) {
     // Get the documents collection
-    var collection = db.collection('documents');
+    let collection = db.collection('documents');
     // Delete first document where a is 3
-    collection.deleteOne({ a: 3 }, function (err, result) {
+    collection.deleteOne({ a : 3 }, function(err, result) {
         assert.equal(err, null);
         assert.equal(1, result.result.n);
         console.log("Removed document with field a equal 3");
         callback(result);
     });
 };
+*/
 // Commands:
 // node app.ts
 // mongod --dbpath=C:\Users\Linda\Dev\Data\Movies
