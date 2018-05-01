@@ -1,31 +1,31 @@
 //import {MovieSearchQuery} from "./MovieSearchQuery";
 
-let express = require('express');
+let express = require( 'express' );
 let app = express();
-let path = require('path');
+let path = require( 'path' );
 //var favicon = require('serve-favicon');
-let logger = require('morgan');
-let cookieParser = require('cookie-parser');
-let bodyParser = require('body-parser');
+let logger = require( 'morgan' );
+let cookieParser = require( 'cookie-parser' );
+let bodyParser = require( 'body-parser' );
 
-let MongoClient = require('mongodb').MongoClient, assert = require('assert');
+let MongoClient = require( 'mongodb' ).MongoClient , assert = require( 'assert' );
 // Connection URL
 let url = 'mongodb://localhost:27017/moviesBE';
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
-app.use(logger('dev'));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use( logger( 'dev' ) );
+app.use( bodyParser.json() );
+app.use( bodyParser.urlencoded( {extended: false} ) );
+app.use( cookieParser() );
+app.use( express.static( path.join( __dirname , 'public' ) ) );
 
-app.use(function (req, res, next) {
-	res.setHeader('Access-Control-Allow-Origin', '*');
-	res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-	res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
-	next();
-});
+app.use( function (req , res , next) {
+    res.setHeader( 'Access-Control-Allow-Origin' , '*' );
+    res.setHeader( 'Access-Control-Allow-Methods' , 'GET, POST, OPTIONS, PUT, PATCH, DELETE' );
+    res.setHeader( 'Access-Control-Allow-Headers' , 'X-Requested-With,content-type' );
+    next();
+} );
 
 /*
 // Connect to the server and open database 'MoviesDB'
@@ -69,289 +69,291 @@ app.get('/movie/query/sort/date', function (req, res) { //request result
     });
 });
 */
-app.get('/', function (req, res) {
+app.get( '/' , function (req , res) {
     // Connect to the server
-    MongoClient.connect(url, function (err, connection) {
-        assert.equal(null, err);
-        if(err){
+    MongoClient.connect( url , function (err , connection) {
+        assert.equal( null , err );
+        if (err) {
             let message = 'Not connected to the database!';
-            console.log(message);
-            res.send(message);
-        } else{
+            console.log( message );
+            res.send( message );
+        } else {
             let message = 'Connected successfully to database';
-            console.log(message);
-            res.send(message);
+            console.log( message );
+            res.send( message );
         }
         connection.close();
-    });
-});
+    } );
+} );
 
-app.get('/movie/query/sort/totalresults/desc', function (req, res) { //request result
+app.get( '/movie/query/sort/totalresults/desc' , function (req , res) { //request result
     // Connect to the server and open database 'MoviesDB'
 // Call methods to insert find, update and delete documents
-    MongoClient.connect(url, function(err, connection) {
-        assert.equal(null, err);
-        console.log("Connected successfully to server");
-        let database = connection.db('MoviesDB');
-        let collection = database.collection('searchHistory');
+    MongoClient.connect( url , function (err , connection) {
+        assert.equal( null , err );
+        console.log( "Connected successfully to server" );
+        let database = connection.db( 'MoviesDB' );
+        let collection = database.collection( 'searchHistory' );
         // Find some documents
-        collection.find({} , {'sort' : [['totalResults', 'descending']]}).toArray(function(err, docs) { // 'ascending', 'descending'
-            assert.equal(err, null);
+        collection.find( {} , {'sort': [['totalResults' , 'descending']]} ).toArray( function (err , docs) { // 'ascending', 'descending'
+            assert.equal( err , null );
             //console.log("Found the following records");
             //console.log(docs);
-            res.send(docs);
+            res.send( docs );
             connection.close();
-        });
-    });
-});
-app.get('/movie/query/sort/totalresults/asc', function (req, res) { //request result
+        } );
+    } );
+} );
+app.get( '/movie/query/sort/totalresults/asc' , function (req , res) { //request result
     // Connect to the server and open database 'MoviesDB'
 // Call methods to insert find, update and delete documents
-    MongoClient.connect(url, function(err, connection) {
-        assert.equal(null, err);
-        console.log("Connected successfully to server");
-        let database = connection.db('MoviesDB');
-        let collection = database.collection('searchHistory');
+    MongoClient.connect( url , function (err , connection) {
+        assert.equal( null , err );
+        console.log( "Connected successfully to server" );
+        let database = connection.db( 'MoviesDB' );
+        let collection = database.collection( 'searchHistory' );
         // Find some documents
-        collection.find({} , {'sort' : [['totalResults', 'ascending']]}).toArray(function(err, docs) { // 'ascending', 'descending'
-            assert.equal(err, null);
+        collection.find( {} , {'sort': [['totalResults' , 'ascending']]} ).toArray( function (err , docs) { // 'ascending', 'descending'
+            assert.equal( err , null );
             //console.log("Found the following records");
             //console.log(docs);
-            res.send(docs);
+            res.send( docs );
             connection.close();
-        });
-    });
-});
+        } );
+    } );
+} );
 
-app.get('/movie/query/sort/date/asc', function (req, res) { //request result
+app.get( '/movie/query/sort/date/asc' , function (req , res) { //request result
     // Connect to the server and open database 'MoviesDB'
 // Call methods to insert find, update and delete documents
-    MongoClient.connect(url, function(err, connection) {
-        assert.equal(null, err);
-        console.log("Connected successfully to server");
-        let database = connection.db('MoviesDB');
-        let collection = database.collection('searchHistory');
+    MongoClient.connect( url , function (err , connection) {
+        assert.equal( null , err );
+        console.log( "Connected successfully to server" );
+        let database = connection.db( 'MoviesDB' );
+        let collection = database.collection( 'searchHistory' );
         // Find some documents
-        collection.find({} , {'sort' : [['ts', 'ascending']]}).toArray(function(err, docs) { // 'ascending', 'descending'
-            assert.equal(err, null);
+        collection.find( {} , {'sort': [['ts' , 'ascending']]} ).toArray( function (err , docs) { // 'ascending', 'descending'
+            assert.equal( err , null );
             //console.log("Found the following records");
             //console.log(docs);
-            res.send(docs);
+            res.send( docs );
             connection.close();
-        });
-    });
-});
+        } );
+    } );
+} );
 
-app.get('/movie/query/sort/date/desc', function (req, res) { //request result
+app.get( '/movie/query/sort/date/desc' , function (req , res) { //request result
     // Connect to the server and open database 'MoviesDB'
 // Call methods to insert find, update and delete documents
-    MongoClient.connect(url, function(err, connection) {
-        assert.equal(null, err);
-        console.log("Connected successfully to server");
-        let database = connection.db('MoviesDB');
-        let collection = database.collection('searchHistory');
+    MongoClient.connect( url , function (err , connection) {
+        assert.equal( null , err );
+        console.log( "Connected successfully to server" );
+        let database = connection.db( 'MoviesDB' );
+        let collection = database.collection( 'searchHistory' );
         // Find some documents
-        collection.find({} , {'sort' : [['ts', 'descending']]}).toArray(function(err, docs) { // 'ascending', 'descending'
-            assert.equal(err, null);
+        collection.find( {} , {'sort': [['ts' , 'descending']]} ).toArray( function (err , docs) { // 'ascending', 'descending'
+            assert.equal( err , null );
             //console.log("Found the following records");
             //console.log(docs);
-            res.send(docs);
+            res.send( docs );
             connection.close();
-        });
-    });
-});
-app.get('/movie/query/sort/last/5', function (req, res) { //request result
+        } );
+    } );
+} );
+app.get( '/movie/query/sort/last/5' , function (req , res) { //request result
     // Connect to the server and open database 'MoviesDB'
 // Call methods to insert find, update and delete documents
-    MongoClient.connect(url, function(err, connection) {
-        assert.equal(null, err);
-        console.log("Connected successfully to server");
-        let database = connection.db('MoviesDB');
-        let collection = database.collection('searchHistory');
+    MongoClient.connect( url , function (err , connection) {
+        assert.equal( null , err );
+        console.log( "Connected successfully to server" );
+        let database = connection.db( 'MoviesDB' );
+        let collection = database.collection( 'searchHistory' );
         // Find some documents
-        collection.find({} , {'sort' : [['ts', 'descending']]}).limit(5).toArray(function(err, docs) { // 'ascending', 'descending'
-            assert.equal(err, null);
+        collection.find( {} , {'sort': [['ts' , 'descending']]} ).limit( 5 ).toArray( function (err , docs) { // 'ascending', 'descending'
+            assert.equal( err , null );
             //console.log("Found the following records");
             //console.log(docs);
-            res.send(docs);
+            res.send( docs );
             connection.close();
-        });
-    });
-});
+        } );
+    } );
+} );
 
-app.get('/movie/query/date', function (req, res) { //request result
+app.get( '/movie/query/date' , function (req , res) { //request result
     // Connect to the server and open database 'MoviesDB'
 // Call methods to insert find, update and delete documents
     let dateFrom = '';
-    if(req.param('timestampDateFrom') > ''){
-        dateFrom = req.param('timestampDateFrom');
-        MongoClient.connect(url, function(err, connection) {
-            assert.equal(null, err);
-            console.log("Connected successfully to server");
-            let database = connection.db('MoviesDB');
-            let collection = database.collection('searchHistory');
-            // Find some documents
-            //
-            console.log(typeof dateFrom);
-            console.log(dateFrom);
-            let number= parseInt(dateFrom);
-            console.log(typeof t);
-            collection.find({'ts': { $gte: number}},{'sort': [['ts', 'ascending']]}).toArray(function(err, docs) { // 'ascending', 'descending' //,  //
-                assert.equal(err, null);
+    if (req.param( 'timestampDateFrom' ) > '') {
+        dateFrom = req.param( 'timestampDateFrom' );
+        MongoClient.connect( url , function (err , connection) {
+            assert.equal( null , err );
+            console.log( "Connected successfully to server" );
+            let database = connection.db( 'MoviesDB' );
+            let collection = database.collection( 'searchHistory' );
+            let number = parseInt( dateFrom );
+            collection.find( {'ts': {$gte: number}} , {'sort': [['ts' , 'ascending']]} ).toArray( function (err , docs) { // 'ascending', 'descending' //,  //
+                assert.equal( err , null );
                 //console.log("Found the following records");
                 //console.log(docs);
-                res.send(docs);
+                res.send( docs );
                 connection.close();
-            });
-        });
+            } );
+        } );
 
-    } else{
+    } else {
         dateFrom = 'no date';
-        res.send(dateFrom);
+        res.send( dateFrom );
     }
+} );
 
-});
 
-
-app.post('/moviesearchquery', function (req, res) { //request result
+app.post( '/moviesearchquery' , function (req , res) { //request result
     // Connect to the server and open database 'MoviesDB'
-    MongoClient.connect(url, function(err, connection) {
-        assert.equal(null, err);
-        console.log("Connected successfully to server!");
-        let database = connection.db('MoviesDB');
-        let collection = database.collection('searchHistory');
+    if (req.param( 'totalResults' ) != null) {
+        MongoClient.connect( url , function (err , connection) {
+            assert.equal( null , err );
+            console.log( "Connected successfully to server!" );
+            let database = connection.db( 'MoviesDB' );
+            let collection = database.collection( 'searchHistory' );
 
-        let message = {searchString: req.param('searchQuery'),totalResults: req.param('totalResults'), ts: Date.now()};
+            let message = {
+                searchString: req.param( 'searchQuery' ) ,
+                totalResults: req.param( 'totalResults' ) ,
+                ts: Date.now()
+            };
 
-        // Insert the student data into the database
-        collection.insert([message], function (err, result){
-            if (err) {
-                console.log(err);
-            } else {
-                console.log(result);
-            }
-        });
-        // Close the database
-        connection.close();
-    });
-    res.send("OK");
-});
-app.post('/moviefavorite/add', function (req, res) { //request result
+            // Insert the student data into the database
+            collection.insert( [message] , function (err , result) {
+                if (err) {
+                    console.log( err );
+                } else {
+                    console.log( result );
+                }
+            } );
+            // Close the database
+            connection.close();
+        } );
+        res.send( "OK" );
+    } else {
+        res.send( "Not OK. Total Results are NULL" );
+    }
+} );
+app.post( '/moviefavorite/add' , function (req , res) { //request result
     // Connect to the server and open database 'MoviesDB'
-    MongoClient.connect(url, function(err, connection) {
-        assert.equal(null, err);
-        console.log("Connected successfully to server!");
-        let database = connection.db('MoviesDB');
-        let collection = database.collection('favoriteMovies');
+    MongoClient.connect( url , function (err , connection) {
+        assert.equal( null , err );
+        console.log( 'Connected successfully to server!' );
+        let database = connection.db( 'MoviesDB' );
+        let collection = database.collection( 'favoriteMovies' );
 
-        let message = {id: req.param('movieID')};
-        console.log('message' + req.param('movieID'));
+        let message = {id: req.param( 'movieID' )};
+        console.log( 'message' + req.param( 'movieID' ) );
         // Insert the student data into the database
-        collection.insert(message,{ unique: true }, function (err, result){
+        collection.insert( message , {unique: true} , function (err , result) {
             //db.members.createIndex( { "user_id": 1 }, { unique: true } )
             if (err) {
-                console.log(err);
-                res.send("Not OK");
+                console.log( err );
+                res.send( "Not OK" );
             } else {
-                console.log(result);
-                res.send("OK");
+                console.log( result );
+                res.send( "OK" );
             }
-        });
+        } );
         // Close the database
         connection.close();
-    });
-});
+    } );
+} );
 
-app.post('/moviefavorite/remove', function (req, res) { //request result
+app.post( '/moviefavorite/remove' , function (req , res) { //request result
     // Connect to the server and open database 'MoviesDB'
-    MongoClient.connect(url, function(err, connection) {
-        assert.equal(null, err);
-        console.log("Connected successfully to server!");
-        let database = connection.db('MoviesDB');
-        let collection = database.collection('favoriteMovies');
+    MongoClient.connect( url , function (err , connection) {
+        assert.equal( null , err );
+        console.log( "Connected successfully to server!" );
+        let database = connection.db( 'MoviesDB' );
+        let collection = database.collection( 'favoriteMovies' );
 
-        let message = {id: req.param('movieID')};
-        console.log('id ' + req.param('movieID'));
+        let message = {id: req.param( 'movieID' )};
+        console.log( 'id ' + req.param( 'movieID' ) );
 
-        collection.deleteOne(message, function(err, result) {
-            assert.equal(err, null);
-            //assert.equal(1, result.result.n); 
-            console.log(result);
-            res.send("Removed");
-        });
+        collection.deleteOne( message , function (err , result) {
+            assert.equal( err , null );
+            //assert.equal(1, result.result.n);
+            console.log( result );
+            res.send( "Removed" );
+        } );
         // Close the database
         connection.close();
-    });
-});
-app.get('/moviefavorite', function (req, res) { //request result
+    } );
+} );
+app.get( '/moviefavorite' , function (req , res) { //request result
     // Connect to the server and open database 'MoviesDB'
-    MongoClient.connect(url, function(err, connection) {
-        assert.equal(null, err);
-        console.log("Connected successfully to server!");
-        let database = connection.db('MoviesDB');
-        let collection = database.collection('favoriteMovies');
+    MongoClient.connect( url , function (err , connection) {
+        assert.equal( null , err );
+        console.log( "Connected successfully to server!" );
+        let database = connection.db( 'MoviesDB' );
+        let collection = database.collection( 'favoriteMovies' );
         // Find the Favorite Movie IDs
-        collection.find({}).toArray(function(err, docs) {
-            assert.equal(err, null);
+        collection.find( {} ).toArray( function (err , docs) {
+            assert.equal( err , null );
             //console.log("Found the following records");
             //console.log(docs);
-            res.send(docs);
-        });
+            res.send( docs );
+        } );
         // Close the database
         connection.close();
-    });
-});
-app.get('/ismovieafavorite', function (req, res) { //request result
+    } );
+} );
+app.get( '/ismovieafavorite' , function (req , res) { //request result
     // Connect to the server and open database 'MoviesDB'
-    MongoClient.connect(url, function(err, connection) {
-        assert.equal(null, err);
-        console.log("Connected successfully to server!");
-        let database = connection.db('MoviesDB');
-        let collection = database.collection('favoriteMovies');
-        let movieID = req.param('movieID');
-        console.log(req.param('movieID'));
+    MongoClient.connect( url , function (err , connection) {
+        assert.equal( null , err );
+        console.log( "Connected successfully to server!" );
+        let database = connection.db( 'MoviesDB' );
+        let collection = database.collection( 'favoriteMovies' );
+        let movieID = req.param( 'movieID' );
+        console.log( req.param( 'movieID' ) );
         // Find the Favorite Movie IDs
 
-        collection.find({id : Number(movieID)}).count(function(err, count) {
-            assert.equal(null, err);
+        collection.find( {id: Number( movieID )} ).count( function (err , count) {
+            assert.equal( null , err );
             if (err) {
-                console.log(err);
-                res.send("err");
+                console.log( err );
+                res.send( "err" );
             } else {
-                if(count>0){
-                    console.log(count);
-                    res.send(JSON.stringify({ answer: true }));
-                } else{
-                    console.log(count);
-                    res.send(JSON.stringify({ answer: false }));
+                if (count > 0) {
+                    console.log( count );
+                    res.send( JSON.stringify( {answer: true} ) );
+                } else {
+                    console.log( count );
+                    res.send( JSON.stringify( {answer: false} ) );
                 }
             }
-        });
+        } );
         // Close the database
         connection.close();
-    });
+    } );
 
 
-});
+} );
 
-app.get('/movie/query/sort/date/desc', function (req, res) { //request result
+app.get( '/movie/query/sort/date/desc' , function (req , res) { //request result
     // Connect to the server and open database 'MoviesDB'
 // Call methods to insert find, update and delete documents
-    MongoClient.connect(url, function(err, connection) {
-        assert.equal(null, err);
-        console.log("Connected successfully to server");
-        let database = connection.db('MoviesDB');
-        let collection = database.collection('searchHistory');
+    MongoClient.connect( url , function (err , connection) {
+        assert.equal( null , err );
+        console.log( "Connected successfully to server" );
+        let database = connection.db( 'MoviesDB' );
+        let collection = database.collection( 'searchHistory' );
         // Find some documents
-        collection.find({} , {'sort' : [['ts', 'descending']]}).toArray(function(err, docs) { // 'ascending', 'descending'
-            assert.equal(err, null);
+        collection.find( {} , {'sort': [['ts' , 'descending']]} ).toArray( function (err , docs) { // 'ascending', 'descending'
+            assert.equal( err , null );
             //console.log("Found the following records");
             //console.log(docs);
-            res.send(docs);
+            res.send( docs );
             connection.close();
-        });
-    });
-});
+        } );
+    } );
+} );
 
 /*
 app.get('/sample', function (req, res) {
@@ -383,9 +385,9 @@ app.post('/', function(req, res) { //request , result
 	res.send(result);
 });
 */
-app.listen(3000, function () {
-	console.log('Example app listening on port 3000!');
-});
+app.listen( 3000 , function () {
+    console.log( 'Example app listening on port 3000!' );
+} );
 
 /*
 let insertDocuments = function(db, callback) {

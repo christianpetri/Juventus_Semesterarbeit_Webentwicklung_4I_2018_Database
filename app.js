@@ -182,12 +182,7 @@ app.get('/movie/query/date', function (req, res) {
             console.log("Connected successfully to server");
             var database = connection.db('MoviesDB');
             var collection = database.collection('searchHistory');
-            // Find some documents
-            //
-            console.log(typeof dateFrom);
-            console.log(dateFrom);
             var number = parseInt(dateFrom);
-            console.log(typeof t);
             collection.find({ 'ts': { $gte: number } }, { 'sort': [['ts', 'ascending']] }).toArray(function (err, docs) {
                 assert.equal(err, null);
                 //console.log("Found the following records");
@@ -204,31 +199,40 @@ app.get('/movie/query/date', function (req, res) {
 });
 app.post('/moviesearchquery', function (req, res) {
     // Connect to the server and open database 'MoviesDB'
-    MongoClient.connect(url, function (err, connection) {
-        assert.equal(null, err);
-        console.log("Connected successfully to server!");
-        var database = connection.db('MoviesDB');
-        var collection = database.collection('searchHistory');
-        var message = { searchString: req.param('searchQuery'), totalResults: req.param('totalResults'), ts: Date.now() };
-        // Insert the student data into the database
-        collection.insert([message], function (err, result) {
-            if (err) {
-                console.log(err);
-            }
-            else {
-                console.log(result);
-            }
+    if (req.param('totalResults') != null) {
+        MongoClient.connect(url, function (err, connection) {
+            assert.equal(null, err);
+            console.log("Connected successfully to server!");
+            var database = connection.db('MoviesDB');
+            var collection = database.collection('searchHistory');
+            var message = {
+                searchString: req.param('searchQuery'),
+                totalResults: req.param('totalResults'),
+                ts: Date.now()
+            };
+            // Insert the student data into the database
+            collection.insert([message], function (err, result) {
+                if (err) {
+                    console.log(err);
+                }
+                else {
+                    console.log(result);
+                }
+            });
+            // Close the database
+            connection.close();
         });
-        // Close the database
-        connection.close();
-    });
-    res.send("OK");
+        res.send("OK");
+    }
+    else {
+        res.send("Not OK. Total Results are NULL");
+    }
 });
 app.post('/moviefavorite/add', function (req, res) {
     // Connect to the server and open database 'MoviesDB'
     MongoClient.connect(url, function (err, connection) {
         assert.equal(null, err);
-        console.log("Connected successfully to server!");
+        console.log('Connected successfully to server!');
         var database = connection.db('MoviesDB');
         var collection = database.collection('favoriteMovies');
         var message = { id: req.param('movieID') };
@@ -260,7 +264,7 @@ app.post('/moviefavorite/remove', function (req, res) {
         console.log('id ' + req.param('movieID'));
         collection.deleteOne(message, function (err, result) {
             assert.equal(err, null);
-            //assert.equal(1, result.result.n); 
+            //assert.equal(1, result.result.n);
             console.log(result);
             res.send("Removed");
         });
